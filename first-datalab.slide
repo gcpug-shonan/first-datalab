@@ -1,0 +1,178 @@
+初めてのDatalab
+Datalabの始め方
+
+Tags: datalab, google cloud platform, gcpug shonan
+
+ぬきぽん
+FreeGufo G.K.
+https://www.freegufo.com/
+@nui_pon
+
+13 May 2017
+
+* Datalab を始める前に
+
+* DatalabのベースとなっているJupyter
+
+ベースとなっているのは、[[http://jupyter.org/][Jupyter]]というPython等の言語をブラウザ上で書いて実行できるツールです。
+
+Jupyterは、もともとIPythonという名前で、Python用に作られましたが、Jupyterと名前を多くの言語を実行できる様になっています。
+
+* Datalabは何が嬉しいか
+
+Jupyterをベースに、Python2.7にしぼり、GCPのサービスを使いやすくするために認証などを勝手にやってくれるのがDatalabになります。
+
+特に、BigDataを扱うデータサイエンスや、機械学習などGCPのサービスを組合せてながらちょっと試したり、パラメータを変更しながら実行するなどの用途にはとても便利です。
+
+ブラウザでステップ実行が可能なため、使い方によってはチームで話をしながらその場で実行するということもやりやすくなります。
+
+* Datalab 公式サイト
+
+全てはここに記載されています。
+
+.link https://cloud.google.com/datalab/
+
+* Datalabを始める準備
+
+GCPが初めての方は、こちらを準備します。
+公式サイトの `Quickstart` に手順があります。
+.link https://cloud.google.com/datalab/docs/quickstarts
+
+- GCPアカウント作成
+- プロジェクト作成
+- Cloud SDKインストール
+
+* Datalabを始めましょう
+
+* 実行する環境
+
+datalabコマンドは、gcloud sdkに含まれていますので、gcloud SDKをインストールした端末で実行します。
+
+Cloud Shellを利用する場合は、既にdatalabコマンドが用意されています。
+基本ローカルと同じ様に利用できます。
+
+8081ポートの使い方が少し特殊になるので、実際の画面で説明をします。
+
+* Datalab コマンド一覧
+
+
+    datalab create [インスタンス名] ：プロジェクト作成
+    datalab stop [インスタンス名]： インスタンスを停止
+    datalab delete [インスタンス名] ：インスタンス削除（追加DISKは削除されない）
+    datalab connect [インスタンス名]： インスタンスへ接続（localhostが立ち上がる）
+
+必要に応じてオプションを指定
+
+    -h : ヘルプ表示
+    --project PROJECT : GCPのプロジェクトを指定
+    --zone ZONE : インスタンスのzoneを指定
+
+* datalab create
+
+お試しの場合は、disk容量を小さく（20GB+ 追加DISKが作られる）
+
+    datalab create [インスタンス名] ：プロジェクト作成
+
+必要に応じて、zone,project指定
+sshパスフレーズ作成
+ネットワーク、ディスク、インスタンスなどがまるごと作成される）
+
+create時の各種オプションは、以下で確認が可能です。幾つか便利なパラメータが有るので一度確認してみて下さい。
+
+    datalab create -h
+
+* お勧めのパラメータ
+
+    datalab create [instanceName] --disk-size-gb 10
+
+※ [instanceName] は、個別に指定して下さい。
+
+現在のgcloud の設定状況を調べるには、
+
+    gcloud info
+
+このコマンドで、現在のgcloudのデフォルトのコマンドを確認してください。
+
+* 例） インスタンスを作る場合
+インスタンス名： `datalab-test`
+プロジェクト名：`test-project`
+zone名： 東京リージョンの `asia-northeast1-a`
+Diskサイズ： 10GB
+
+    datalab create datalab-test --project test-project --zone asia-northeast1-a --disk-size-gb 10
+
+
+* Datalabの使い方説明
+
+* Datalab に接続
+
+以下のコマンドで、connectしましょう。
+
+    datalab connect [インスタンス名]： インスタンスへ接続（localhostが立ち上がる）
+
+まずは、localhost:8081/ を開いて、 `/home/datalab/docs` を見ましょう。
+
+* intoro, samples, tutlials,
+
+.image image/datalab-docs.png _ 800
+
+基本的には、 `home/datalab/notebooks` 内にnotebookを作って作業をします。
+
+
+* notebookのバックアップ
+
+Datalabには、 オープンソースの `ungit` が組み込まれており、cloud souce repository に保存が出来る。
+
+.image image/ungit.png _ 800
+
+* Teamでの利用
+
+複数人のチームでの利用も出来ると色々捗りそうですよね！
+そんな時のために、チームでの利用方法も用意されています。
+https://cloud.google.com/datalab/docs/how-to/datalab-team
+
+簡単にまとめると
+
+- 各メンバー専用のインスタンスを立てる（権限により利用できるユーザが制限される）
+- Cloud Source Repository で、notebookを共有
+- Cloud Source Repository は、Datalabに組み込まれているungitを使って保存
+
+になります。
+
+
+* Datalabの終わり方
+
+* 一時中断する場合には、
+
+    datalab stop [インスタンス名]
+
+で止めます。
+
+* 完全に削除
+
+完全に削除するには、インスタンスの削除
+
+    datalab delete [インスタンス名]
+
+diskの削除は、WebのConsoleで、
+
+    Compute Engine ⇛ disks
+
+で、追加したdiskを削除
+
+Networkの削除
+
+    Networking ⇛ Firewall rules
+
+で、対象のネットワークを削除
+
+* 思い切って消すなら
+
+プロジェクトごと削除するのが確実です。
+
+
+* 豆知識
+
+* Datalabは、Dockerで動いている
+
+Datalabの本体は、Dockerで動いており、k8s(GKE)で動いている模様。
